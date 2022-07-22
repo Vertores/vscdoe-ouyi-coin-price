@@ -1,26 +1,64 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
-
-// this method is called when your extension is activated
-// your extension is activated the very first time the command is executed
+import { WebSocket } from 'ws';
+let myStatusBarItem: vscode.StatusBarItem;
+const WS_URL = 'wss://wspri.coinall.ltd:8443/ws/v5/ipublic';
+const INST_ID = 'ETH-USDT-SWAP';
+let ws: WebSocket
 export function activate(context: vscode.ExtensionContext) {
+
+	const myCommandId = 'cybermoney.ETH';
+	context.subscriptions.push(vscode.commands.registerCommand(myCommandId, () => {
+		if (ws && ws.readyState === ws.OPEN) {
+           CloseWebsocket(ws);
+		} else {
+	     ws = initWebsocket();
+		}
+	   
+	}));
+	myStatusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left);
+	myStatusBarItem.command = myCommandId;
+	context.subscriptions.push(myStatusBarItem);
+	myStatusBarItem.text = '点击连接';
+	myStatusBarItem.show();
 	
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "cybermoney" is now active!');
 
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with registerCommand
-	// The commandId parameter must match the command field in package.json
-	let disposable = vscode.commands.registerCommand('cybermoney.helloWorld', () => {
-		// The code you place here will be executed every time your command is executed
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from cybermoney!');
-	});
-
-	context.subscriptions.push(disposable);
 }
 
-// this method is called when your extension is deactivated
-export function deactivate() {}
+export function deactivate() { }
+
+
+function CloseWebsocket(ws: WebSocket) {
+    ws.close();
+	vscode.window.showInformationMessage('连接已关闭');
+	myStatusBarItem.text = '点击连接';
+}
+
+function initWebsocket() {
+	const ws = new WebSocket(WS_URL);
+	ws.on('open', function open() {
+		myStatusBarItem.text = 'websocket连接成功';
+		ws.send(JSON.stringify({ op: 'subscribe', args: [{ channel: 'tickers', instId: INST_ID }] }));
+	});
+	ws.on('message', function message(buffer) {
+		const res = buffer.toString('utf8');
+		let rsg = JSON.parse(res);
+		if (rsg.data) {
+			let last = Number(rsg.data[0].last);
+			let sodUtc8 = Number(rsg.data[0].sodUtc8);
+			let diff = 0;
+			let percent = '';
+			if (last > sodUtc8) {
+               diff = last - sodUtc8;
+			   percent = (diff / sodUtc8 * 100).toFixed(2) + "%";
+			   myStatusBarItem.color = '#F56C6C';
+			} else {
+               diff = sodUtc8 - last;
+			   percent = '-' + (diff / sodUtc8 * 100).toFixed(2) + "%";
+			   myStatusBarItem.color = '#67C23A';
+			}			
+			myStatusBarItem.text = `${INST_ID}-${rsg.data[0].last}/${percent}`;
+		}
+
+	});
+	return ws;
+}
