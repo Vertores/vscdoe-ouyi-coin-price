@@ -1,8 +1,11 @@
 {
-	"name": "cybermoney",
-	"displayName": "cybermoney",
-	"description": "",
-	"version": "0.0.1",
+	"name": "ouyi-coin-price",
+	"author": {
+		"name": "vector"
+	},
+	"displayName": "ouyi-coin-price",
+	"description": "根据欧易提供的V5API查询加密货币行情的插件",
+	"version": "1.0.0",
 	"engines": {
 		"vscode": "^1.69.0"
 	},
@@ -16,9 +19,8 @@
 	"contributes": {
 		"commands": [
 			{
-				"command": "cybermoney.ETH",
-				"title": "获取ETHUSDT-SWAP最新行情",
-				"shortTitle": "websocket连接获取"
+				"command": "cybermoney.GETCOINPICRE",
+				"title": "获取交易行情"
 			}
 		]
 	},
