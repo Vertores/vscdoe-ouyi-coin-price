@@ -9,12 +9,20 @@
 	"engines": {
 		"vscode": "^1.69.0"
 	},
+	"publisher": "vector",
+	"keywords": ["ouyi","bitCoin","eth","coin"],
 	"categories": [
 		"Other"
 	],
+	"icon": "images/ouyi.png",
 	"activationEvents": [
 		"*"
 	],
+	"homepage": "https://github.com/Vertores/vscdoe-ouyi-coin-price/blob/main/README.md",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/Vertores/vscdoe-ouyi-coin-price/tree/main"
+	},
 	"main": "./dist/extension.js",
 	"contributes": {
 		"commands": [
