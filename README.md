@@ -4,10 +4,14 @@
 
 a plug-in for viewing the real-time price of cryptocurrencies based on the Ouyi Open V5API interface, which can manually input and quickly view the implementation price of common cryptocurrencies. This version includes a simple price display function.
 
-![图片]('./images/image_01.gif')  
+快速选择  Quick selection
 
+![图片](./images/image_01.gif)  
 
-![图片]('./images/image_02.gif')
+  
+手动添加  Add Manually
+
+![图片](./images/image_02.gif)
 
 
 如有任何疑问或改进的方法,请联系我,邮件地址 jtpl2005@163.com
